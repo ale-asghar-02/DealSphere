@@ -1,0 +1,1 @@
+exports.WITHDRAWAL_COMMISSION_PERCENT = 5; // 5% — chaho to admin-configurable bhi bana sakte ho baad me

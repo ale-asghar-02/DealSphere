@@ -1,0 +1,14 @@
+/* ============================================== SEARCH SUGGESTIONS ============================================= */
+
+.suggesstion-item {
+  cursor: pointer;
+  padding: 6px 12px;
+  margin: 0;
+  transition: background-color 0.15s ease;
+}
+
+.suggesstion-item:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+/* =============================================================================================================== */

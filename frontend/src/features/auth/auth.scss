@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* =================================================== AUTH PAGE ================================================= */
+
+.login-section .forgot-password {
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.login-section .forgot-password:hover {
+    color: var(--primary-blue);
+}
+
+.google-auth-btn .nsm7Bb-HzV7m-LgbsSe {
+    height: fit-content !important;
+    font-size: 1rem !important;
+    border-radius: 0.44rem !important;
+    letter-spacing: 0 !important;
+    padding-block: 0.69rem !important;
+}
+
+.google-auth-btn .nsm7Bb-HzV7m-LgbsSe-Bz112c {
+  width: 25px !important;
+  height: 25px !important;
+}
+
+.google-auth-btn .LgbsSe-Bz112c {
+  width: 25px !important;
+  height: 25px !important;
+}
+
+.google-auth-btn .nsm7Bb-HzV7m-LgbsSe .nsm7Bb-HzV7m-LgbsSe-BPrWId {
+    text-align: start !important;
+    font-family: var(--font-primary) !important;
+    font-weight: 400 !important;
+}
+
+.google-auth-btn .nsm7Bb-HzV7m-LgbsSe-bN97Pc-sM5MNb {
+  position: relative !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: fit-content !important;
+}
+
+/* =============================================================================================================== */

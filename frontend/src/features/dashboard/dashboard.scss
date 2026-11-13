@@ -1,0 +1,229 @@
+/* ======================================= DASHBOARD TABLE (ALl Components) ====================================== */
+
+.table-responsive {
+  min-height: 68vh;
+  scrollbar-width: none;
+}
+
+.table-responsive .table th {
+  border: none;
+  font-weight: 400;
+  padding-block: 1rem;
+  text-align: center;
+  background-color: #e9e9e9ab;
+}
+
+.table-responsive .table td {
+  border: none;
+  font-weight: 400;
+  padding-block: 0.5rem;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.table-responsive .table tbody td .btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =============================================================================================================== */
+
+
+/* =================================================== DASHBOARD ================================================= */
+
+.user-dashboard .dashboard-left-side,
+.user-dashboard .dashboard-right-side {
+  height: 87vh;
+  overflow-y: auto;
+}
+
+.user-dashboard .dashboard-left-side .nav-tabs{
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+.user-dashboard .dashboard-left-side .profile-tags .nav-link {
+  font-size: 1.05rem;
+  color: var(--dark-black);
+}
+
+.user-dashboard .dashboard-left-side .profile-tags .nav-link.active {
+  color: var(--medium-blue) !important;
+}
+
+.user-dashboard .dashboard-left-side .nav-group-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 1.05rem;
+  color: var(--dark-black);
+  text-align: left;
+}
+
+.user-dashboard .dashboard-left-side .nav-group-toggle.has-active {
+  color: var(--medium-blue);
+}
+
+.user-dashboard .dashboard-left-side .nav-group-chevron {
+  transition: transform 0.2s ease;
+}
+
+.user-dashboard .dashboard-left-side .nav-group-chevron.open {
+  transform: rotate(180deg);
+}
+
+.user-dashboard .dashboard-left-side .nav-group-children {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 1.6rem;
+  display: none;
+}
+
+.user-dashboard .dashboard-left-side .nav-group-children.open {
+  display: block;
+}
+
+/* ---------- Small devices: groups bhi flex row mein ---------- */
+@media (max-width: 767px) {
+  .user-dashboard .dashboard-left-side,
+  .user-dashboard .dashboard-right-side {
+    height: none;
+    height: fit-content !important;
+  }
+
+  /* li wrappers gayab, taake toggle aur items seedhe main flex row ka hissa banein */
+  .user-dashboard .dashboard-left-side .nav-group {
+    display: contents;
+  }
+
+  .user-dashboard .dashboard-left-side .nav-group-children {
+    display: none;
+    padding: 0;
+  }
+
+  /* group khula ho to uske items usi row mein header ke baad aayenge */
+  .user-dashboard .dashboard-left-side .nav-group-children.open {
+    display: contents;
+  }
+
+  /* group header ab row ka normal item hai */
+  .user-dashboard .dashboard-left-side .nav-group-toggle {
+    display: flex;
+    width: auto;
+    flex-shrink: 0;
+    gap: 0.35rem;
+    margin-right: 1.5rem;
+    white-space: nowrap;
+  }
+
+  /* group ke andar wale items thode alag nazar aayen */
+  .user-dashboard .dashboard-left-side .nav-group-children.open .nav-link {
+    font-size: 0.95rem;
+    opacity: 0.9;
+  }
+}
+
+/* =============================================================================================================== */
+
+
+/* ============================================= POST CATEGORY (Model) =========================================== */
+
+.modal .post-category-items,
+.modal .post-subCategory-items {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: 0.2s;
+}
+
+.modal .post-category-items:hover,
+.modal .post-subCategory-items:hover {
+   background-color: #e0e0e0;
+}
+
+.modal .post-category-items.active,
+.modal .post-subCategory-items.active {
+  color: #fff;
+  background-color: #191919;
+}
+
+/* =============================================================================================================== */
+
+
+/* =========================================== CREATE ADVERTISMENT PAGE ========================================== */
+
+.create-advertisement-section .image-slot,
+.edit-advertisement-section .image-slot {
+  width: 80px;
+  height: 60px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  background-color: #f8f9fa;
+}
+.create-advertisement-section .image-slot img,
+.edit-advertisement-section .image-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.create-advertisement-section .image-slot .plus-label,
+.edit-advertisement-section .plus-label {
+  width: 100%;
+  height: 100%;
+  color: #0D6EFD !important;
+  background-color: #ebf1ff;
+  font-size: 2rem;
+  border: 1px solid;
+  border-color: #588aff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.create-advertisement-section .image-slot .empty-label {
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+}
+
+.create-advertisement-section .image-slot .remove-btn,
+.edit-advertisement-section .image-slot .remove-btn {
+  width: 18px !important;
+  height: 18px !important;
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-radius: 50%;
+  padding: 0;
+  line-height: 1;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =============================================================================================================== */

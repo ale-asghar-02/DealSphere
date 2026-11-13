@@ -1,0 +1,23 @@
+/* ================================================ CATEGORY SECTION ============================================= */
+
+.category-item.active {
+  color: var(--white) !important;
+  background-color: var(--blue-dark-gray) !important;
+  border-color: var(--blue-dark-gray) !important;
+}
+
+.category .category-icon {
+  background-color: var(--blue-dark-gray);
+}
+
+.category .category-item {
+  background-color: var(--white);
+  transition: 0.3s;
+}
+
+.category .category-item:hover {
+  color: var(--white);
+  background-color: var(--blue-dark-gray);
+}
+
+/* =============================================================================================================== */

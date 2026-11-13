@@ -1,0 +1,20 @@
+/* ======================================== CART PAGE COMPONENET (Dropdown) ====================================== */
+
+.cart-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: auto;
+  width: 350px;
+  z-index: 999;
+}
+
+@media (max-width: 767.98px) {
+  .cart-dropdown {
+    left: 0;
+    right: auto;
+    width: 350px;
+  }
+}
+
+/* =============================================================================================================== */

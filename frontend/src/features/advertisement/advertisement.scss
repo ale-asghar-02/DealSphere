@@ -1,0 +1,60 @@
+/* ============================================== ADVERTISEMENT PAGE ============================================= */
+
+.filter-panel {
+  height: fit-content;
+}
+
+/* Desktop: filter sticky rahega, scroll sirf cards ka hoga (scroll bar nahi dikhega) */
+@media (min-width: 768px) {
+  .filter-panel {
+    position: sticky;
+    top: 8px;
+    align-self: flex-start;
+    max-height: calc(100vh - 16px);
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 767.98px) {
+  .filter-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    background: #fff;
+    z-index: 1050;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+  }
+
+  .filter-panel.show {
+    transform: translateX(0);
+    padding: 1rem;
+  }
+
+  .filter-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1040;
+  }
+}
+
+.dropdown-images-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.dropdown-images-wrapper.show-images {
+  max-height: 200px;
+}
+
+/* =============================================================================================================== */
