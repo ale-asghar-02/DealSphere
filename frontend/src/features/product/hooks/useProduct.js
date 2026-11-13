@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { getToastError } from "@/utils/validationErrors";
-import { getSearchResults } from "../../search/services/searchApi.js";
+import { getSearchResults } from "../../search/services/searchAPI.js";
 import { getAllProduct, getProductsByCategory, getSingleProduct, getRelatedProducts } from "../services/productAPI.js";
 
 const useProduct = () => {

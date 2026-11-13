@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { getToastError } from "@/utils/validationErrors";
-import { getSearchResults } from "../../search/services/searchApi";
+import { getSearchResults } from "../../search/services/searchAPI";
 import { getAllAds, getAllAdsWithCategorySlug, getSingleAds, getRelativeAds } from "../services/advertisementAPI";
 
 const useAdvertisement = () => {
