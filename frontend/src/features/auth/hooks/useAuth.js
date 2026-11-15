@@ -11,7 +11,7 @@ export const useAuth = () => {
   const [authLoading, setAuthLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
 
-  const { handleGetCart, resetCartState } = useCartContext()
+  const { handleGetCart, resetCartState } = useCartContext();
 
   const handleRegister = async ({ username, email, password, accountType }) => {
     setAuthLoading(true);
@@ -27,7 +27,7 @@ export const useAuth = () => {
       } else {
         toast.error(getToastError(error, "Registration failed. Please try again."));
       }
-      return false; 
+      return false;
     } finally {
       setAuthLoading(false);
     }
@@ -39,7 +39,7 @@ export const useAuth = () => {
       const data = await login({ email, password });
       setUser(data.user);
       await handleGetCart();
-      return true; 
+      return true;
     } catch (error) {
       const status = error?.response?.status;
       const resData = error?.response?.data;
@@ -55,7 +55,7 @@ export const useAuth = () => {
       } else {
         toast.error(getToastError(error, "Login failed. Please try again."));
       }
-      return false; 
+      return false;
     } finally {
       setAuthLoading(false);
     }
@@ -166,7 +166,7 @@ export const useAuth = () => {
     setAuthLoading(true);
     try {
       await forgotPassword({ newPassword, confirmPassword });
-      setUser(null)
+      setUser(null);
       toast.success("Password reset successfully! Please login with your new password.");
       return true;
     } catch (error) {
@@ -182,8 +182,25 @@ export const useAuth = () => {
     }
   };
 
-  const handleGoogleAuth = () => {
+  // Ek hi function: bina argument ke Google par redirect, { error } ke saath toast dikhata hai
+  const handleGoogleAuth = ({ error } = {}) => {
+    if (error) {
+      const GOOGLE_ERRORS = {
+        google_failed: "Google login failed. Please try again.",
+        email_not_verified: "Your Google email is not verified.",
+        account_deleted: "This account has been deleted.",
+        account_banned: "Your account has been banned.",
+        account_suspended: "Your account is currently suspended.",
+        server_error: "Something went wrong. Please try again later.",
+      };
+      toast.error(GOOGLE_ERRORS[error] || "Google login failed. Please try again.", {
+        toastId: "google-auth-error",
+      });
+      return false;
+    }
+
     window.location.href = getGoogleAuthUrl();
+    return true;
   };
 
   return {

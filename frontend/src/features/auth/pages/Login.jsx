@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import '../auth.scss'
 
@@ -12,18 +12,29 @@ import logo from '@/assets/images/logo.svg'
 
 const Login = () => {
   const navigate = useNavigate();
-  const { authLoading, fieldErrors, setFieldErrors, handleLogin, handleResetOtp } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { authLoading, fieldErrors, setFieldErrors, handleLogin, handleResetOtp, handleGoogleAuth } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  // Google se wapas aane par backend /login?error=<code> bhejta hai
+  useEffect(() => {
+    const code = searchParams.get("error");
+    if (code) {
+      handleGoogleAuth({ error: code });
+      setSearchParams({}, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const submitLoginHandler = async (e) => {
     e.preventDefault();
 
     const result = await handleLogin({ email, password });
 
-    if( result === true ) { 
-      navigate('/') 
+    if (result === true) {
+      navigate('/')
     } else if (result.notVerified) {
       navigate('/verify-otp', { state: { email: result.email } });
     }

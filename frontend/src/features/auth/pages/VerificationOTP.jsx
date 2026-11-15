@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { IconShieldCheck } from "@tabler/icons-react";
 import { useAuth } from "../hooks/useAuth";
 
@@ -23,7 +23,10 @@ const VerificationOTP = () => {
   // mode: 'reset' → forgot password flow, otherwise → register/account-verify flow
   const mode = location.state?.mode === "reset" ? "reset" : "register";
 
-  const [email] = useState(location.state?.email || user?.email || "anonymous@gmail.com");
+  const [searchParams] = useSearchParams();
+  const [email] = useState(
+    location.state?.email || searchParams.get("email") || user?.email || ""
+  );
   const [otp, setOtp] = useState("");
 
   const submitVerifyHandler = async (e) => {

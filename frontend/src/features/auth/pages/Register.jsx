@@ -117,7 +117,7 @@ const Register = () => {
                     {authLoading ? "Waiting..." : "Register Account"}
                   </button>
                 </div>
-                <GoogleAuthButton label="Sign up with Google" googleText="signup_with" />
+                <GoogleAuthButton label="Sign up with Google" />
               </div>
             </form>
 

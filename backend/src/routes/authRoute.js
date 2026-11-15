@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const config = require("../configs/config");
 const authController = require('../controllers/authController');
 const authValidator = require('../validators/authValidator');
 const { authLimiter, looseLimiter } = require('../middlewares/rateLimiter');
@@ -35,24 +34,26 @@ router.post('/forgot-password', authLimiter, authValidator.validateResetPassword
 //* =================================================================================================================
 
 
-//* ============================================= GOOGLE AUTHENTICATION =============================================
+//* ============================ GOOGLE AUTHENTICATION ============================
 
-router.get( "/google", authLimiter, 
-    passport.authenticate("google", { 
-      scope: ["profile", "email"], 
-      session: false, 
-      prompt: "select_account",
-    }) 
+router.get( "/google", authLimiter,
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    session: false,
+    prompt: "select_account",
+  }),
 );
 
-router.get( "/google/callback",
-  passport.authenticate("google", {
-    session: false,
-    failureRedirect: `${config.CLIENT_URL}/user/login`,
-  }),
+router.get( "/google/callback", authLimiter,
+  (req, res, next) => {
+    passport.authenticate("google", { session: false }, (err, user) => {
+      req.user = err || !user ? null : user;
+      next();
+    })(req, res, next);
+  },
   authController.googleCallback,
 );
 
-//* =================================================================================================================
+//* ===============================================================================
 
 module.exports = router;

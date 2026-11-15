@@ -65,8 +65,8 @@ export const forgotPassword = async ({ newPassword, confirmPassword })=> {
 }
 
 export const getGoogleAuthUrl = () => {
-    return `${import.meta.env.VITE_SERVER_URL}/auth/user/google`
-}
+  return `${import.meta.env.VITE_SERVER_URL}/auth/user/google`;
+};
 
 // naya export — app load hote waqt bootstrap ke liye chahiye hoga (Step 3 dekhein)
 export const refreshAccessToken = async () => {

@@ -11,35 +11,37 @@
     color: var(--primary-blue);
 }
 
-.google-auth-btn .nsm7Bb-HzV7m-LgbsSe {
-    height: fit-content !important;
-    font-size: 1rem !important;
-    border-radius: 0.44rem !important;
-    letter-spacing: 0 !important;
-    padding-block: 0.69rem !important;
-}
+.google-auth-btn button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding-block: 0.69rem;
+  font-size: 1rem;
+  font-weight: 400;
+  font-family: var(--font-primary);
+  letter-spacing: 0;
+  color: #3c4043;
+  background: #fff;
+  border: 1px solid #dadce0;
+  border-radius: 0.44rem;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
 
-.google-auth-btn .nsm7Bb-HzV7m-LgbsSe-Bz112c {
-  width: 25px !important;
-  height: 25px !important;
-}
+  img {
+    width: 25px;
+    height: 25px;
+  }
 
-.google-auth-btn .LgbsSe-Bz112c {
-  width: 25px !important;
-  height: 25px !important;
-}
+  &:hover {
+    background: #f2f9ff;
+    border-color: #c1e2ff;
+  }
 
-.google-auth-btn .nsm7Bb-HzV7m-LgbsSe .nsm7Bb-HzV7m-LgbsSe-BPrWId {
-    text-align: start !important;
-    font-family: var(--font-primary) !important;
-    font-weight: 400 !important;
-}
-
-.google-auth-btn .nsm7Bb-HzV7m-LgbsSe-bN97Pc-sM5MNb {
-  position: relative !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  width: fit-content !important;
+  &:active {
+    background: #f1f3f4;
+  }
 }
 
 /* =============================================================================================================== */

@@ -1,6 +1,5 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { OAuth2Client } = require("google-auth-library");
 const config = require("../configs/config");
 const AppError = require("../utils/AppError");
 const logger = require("../utils/logger");
@@ -12,7 +11,6 @@ const { generateOtp, sendEmail, verifyAccountTemplate, resetPasswordTemplate, we
 
 const OTP_EXPIRY_MS = 10 * 60 * 1000;
 const OTP_RESEND_COOLDOWN_MS = 60 * 1000;
-const googleClient = new OAuth2Client(config.GOOGLE_CLIENT_ID);
 
 const sendEmailSafely = (label, to, template) => {
   sendEmail(to, template).catch((err) => {
@@ -459,6 +457,14 @@ const resetPassword = async (req, res, next) => {
 };
 
 // ── Google Login / Register (Passport callback) ─────────────────────────
+// Backend sirf error code bhejta hai, message frontend (useAuth) define karta hai
+const buildGoogleUsername = (name, email) => {
+  let base = (name || "").trim().slice(0, 30);
+  if (base.length < 3) base = email.split("@")[0].slice(0, 30);
+  if (base.length < 3) base = base.padEnd(3, "0");
+  return base;
+};
+
 const googleCallback = async (req, res) => {
   const fail = (code) =>
     res.redirect(`${config.CLIENT_URL}/login?error=${code}`);
@@ -469,20 +475,40 @@ const googleCallback = async (req, res) => {
     if (!googleId || !email) return fail("google_failed");
     if (!emailVerified) return fail("email_not_verified");
 
-    let user = await userModel.findOne({ googleId });
+    const normalizedEmail = email.toLowerCase();
 
-    if (!user) {
-      user = await userModel.findOne({ email: email.toLowerCase() });
-    }
+    let user =
+      (await userModel.findOne({ googleId })) ||
+      (await userModel.findOne({ email: normalizedEmail }));
 
-    if (user?.deletion?.isDeleted) return fail("account_deleted");
+    // Deleted / banned / suspended check, OTP ya login se pehle
+    if (user) {
+      if (user.deletion?.isDeleted) return fail("account_deleted");
 
-    if (user && !user.googleId) {
-      user.googleId = googleId;
-      await user.save();
+      // email kisi aur Google account se linked hai
+      if (user.googleId && user.googleId !== googleId) {
+        return fail("google_failed");
+      }
+
+      if (user.moderation?.isBanned) return fail("account_banned");
+
+      if (
+        user.moderation?.suspendedUntil &&
+        user.moderation.suspendedUntil > new Date()
+      ) {
+        return fail("account_suspended");
+      }
     }
 
     const sendOtpAndRedirect = async (u) => {
+      const redirectUrl = `${config.CLIENT_URL}/verify-otp?email=${encodeURIComponent(u.email)}`;
+
+      // OTP spam rokne ke liye: 60s ke andar dobara OTP na bhejo
+      if (u.verifyOtpExpireAt) {
+        const elapsed = Date.now() - (u.verifyOtpExpireAt - OTP_EXPIRY_MS);
+        if (elapsed < OTP_RESEND_COOLDOWN_MS) return res.redirect(redirectUrl);
+      }
+
       const otp = generateOtp();
       u.verifyOtp = hashToken(otp);
       u.verifyOtpExpireAt = Date.now() + OTP_EXPIRY_MS;
@@ -494,38 +520,43 @@ const googleCallback = async (req, res) => {
         verifyAccountTemplate(u.username, otp),
       );
 
-      return res.redirect(
-        `${config.CLIENT_URL}/verify-otp?email=${encodeURIComponent(u.email)}`,
-      );
+      return res.redirect(redirectUrl);
     };
 
+    // Naya account: create + OTP + verify-otp page
     if (!user) {
       user = await userModel.create({
-        username: name || email.split("@")[0],
-        email: email.toLowerCase(),
+        username: buildGoogleUsername(name, normalizedEmail),
+        email: normalizedEmail,
         googleId,
         isAccountVerified: false,
       });
       return sendOtpAndRedirect(user);
     }
 
-    if (!user.isAccountVerified) return sendOtpAndRedirect(user);
+    // Purana account ko Google se link karna
+    if (!user.googleId) {
+      user.googleId = googleId;
 
-    if (user.moderation.isBanned) return fail("account_banned");
-
-    if (
-      user.moderation.suspendedUntil &&
-      user.moderation.suspendedUntil > new Date()
-    ) {
-      return fail("account_suspended");
+      // pre-hijacking se bachao: unverified account ka purana password hata do
+      if (!user.isAccountVerified) {
+        user.password = undefined;
+        await sessionModel.deleteMany({ user: user._id });
+      }
+      await user.save();
     }
 
-    await issueAuthTokens(res, user, req);
+    // Verified nahi hai to OTP
+    if (!user.isAccountVerified) return sendOtpAndRedirect(user);
 
+    // Already verified: seedha login
+    await issueAuthTokens(res, user, req);
     return res.redirect(`${config.CLIENT_URL}/`);
   } catch (error) {
     console.error("Google callback error:", error);
-    return res.redirect(`${config.CLIENT_URL}/login?error=server_error`);
+    // do requests ek saath aayen to duplicate key aa sakti hai
+    if (error?.code === 11000) return fail("google_failed");
+    return fail("server_error");
   }
 };
 

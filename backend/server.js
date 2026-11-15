@@ -2,6 +2,7 @@ const express = require('express')
 const app = express();
 const http = require('http');
 const cors = require('cors');
+const passport = require('passport');  
 const cookieParser = require('cookie-parser');
 const config = require('./src/configs/config')
 const mongooseConnection = require('./src/configs/mongooseConnection');
@@ -9,6 +10,8 @@ const errorHandler = require('./src/middlewares/errorHandler');
 const logger = require('./src/utils/logger');
 const { stripeWebhook } = require("./src/controllers/paymentWebhookController");
 const { initializeSocket } = require('./src/socket/chatSocket');
+
+require('./src/configs/passport');
 
 //* Process-level safety nets (server crash se bachne ke liye)
 process.on('unhandledRejection', (reason) => {
@@ -31,7 +34,6 @@ const startFeatureExpiryCron = require('./src/cron/featureExpiryCron');
 const startNotificationCleanupCron = require('./src/cron/notificationCleanupCron');
 const startSubscriptionExpiryCron = require("./src/cron/subscriptionCron");
 const startDesignSubscriptionCron = require("./src/cron/designSubscriptionCron");
-const { type } = require('os');
 
 startExpiryJob();
 startFeatureExpiryCron();
@@ -49,6 +51,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({ origin: config.CLIENT_URL, credentials: true }));
+app.use(passport.initialize());
 
 //* Routes
 app.use('/ai', require('./src/routes/aiRoute'));
