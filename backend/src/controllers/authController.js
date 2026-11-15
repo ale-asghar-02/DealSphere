@@ -501,7 +501,7 @@ const googleCallback = async (req, res) => {
     }
 
     const sendOtpAndRedirect = async (u) => {
-      const redirectUrl = `${config.CLIENT_URL}/verify-otp}`;
+      const redirectUrl = `${config.CLIENT_URL}/verify-otp`;
 
       // OTP spam rokne ke liye: 60s ke andar dobara OTP na bhejo
       if (u.verifyOtpExpireAt) {
