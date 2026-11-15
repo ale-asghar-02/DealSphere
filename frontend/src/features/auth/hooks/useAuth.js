@@ -4,7 +4,7 @@ import { getFieldErrors, getToastError } from "../../../utils/validationErrors";
 import { AuthContext } from "../AuthContext";
 import { useCartContext } from "../../cart/CartContext";
 import { resetSubscriptionStore } from "../../subscription/store/SubscriptionStore";
-import { register, login, logout, logoutAllDevices, sendOtpVerify, verifyAccount, resetOtp, verifyResetOtp, forgotPassword, googleAuth } from "../services/authAPI";
+import { register, login, logout, logoutAllDevices, sendOtpVerify, verifyAccount, resetOtp, verifyResetOtp, forgotPassword, getGoogleAuthUrl } from "../services/authAPI";
 
 export const useAuth = () => {
   const { user, setUser } = useContext(AuthContext);
@@ -182,25 +182,8 @@ export const useAuth = () => {
     }
   };
 
-  const handleGoogleAuth = async ({ idToken }) => {
-    setAuthLoading(true);
-    try {
-      const data = await googleAuth({ idToken });
-
-      // naya account -> user field nahi aayegi, sirf email
-      if (!data.user) {
-        toast.success(data.message || "OTP sent to your email");
-        return { success: true, needsVerification: true, email: data.email };
-      }
-
-      setUser(data.user);
-      return { success: true, needsVerification: false };
-    } catch (error) {
-      toast.error(getToastError(error, "Google login failed. Please try again."));
-      return { success: false };
-    } finally {
-      setAuthLoading(false);
-    }
+  const handleGoogleAuth = () => {
+    window.location.href = getGoogleAuthUrl();
   };
 
   return {

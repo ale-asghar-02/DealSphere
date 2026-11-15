@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const config = require("../configs/config");
 const authController = require('../controllers/authController');
 const authValidator = require('../validators/authValidator');
 const { authLimiter, looseLimiter } = require('../middlewares/rateLimiter');
 const authMiddleware = require('../middlewares/authMiddleware');
+const passport = require('../configs/passport')
 
 //* ================================================= AUTHENTICATION ================================================
 
@@ -35,7 +37,21 @@ router.post('/forgot-password', authLimiter, authValidator.validateResetPassword
 
 //* ============================================= GOOGLE AUTHENTICATION =============================================
 
-router.post('/google-auth', authLimiter, authController.googleAuth);
+router.get( "/google", authLimiter, 
+    passport.authenticate("google", { 
+      scope: ["profile", "email"], 
+      session: false, 
+      prompt: "select_account",
+    }) 
+);
+
+router.get( "/google/callback",
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: `${config.CLIENT_URL}/user/login`,
+  }),
+  authController.googleCallback,
+);
 
 //* =================================================================================================================
 

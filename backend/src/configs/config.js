@@ -8,8 +8,10 @@ if (!process.env.JWT_REFRESH_SECRET) throw new Error('JWT_REFRESH_SECRET environ
 if (!process.env.RESET_PASSWORD_SECRET) throw new Error('RESET_PASSWORD_SECRET environment variable is not set');
 if (!process.env.PORT) throw new Error('PORT environment variable is not set');
 if (!process.env.SENDER_EMAIL) throw new Error('SENDER_EMAIL environment variable is not set');
-if (!process.env.GOOGLE_CLIENT_ID) throw new Error('GOOGLE_CLIENT_ID environment variable is not set');
 if (!process.env.COMPANY_NAME) throw new Error('COMPANY_NAME environment variable is not set');
+if (!process.env.GOOGLE_CLIENT_ID) throw new Error('GOOGLE_CLIENT_ID environment variable is not set');
+if (!process.env.GOOGLE_CLIENT_SECRET) throw new Error('GOOGLE_CLIENT_SECRET environment variable is not set');
+if (!process.env.GOOGLE_CALLBACK_URL) throw new Error('GOOGLE_CALLBACK_URL environment variable is not set');
 if (!process.env.BREVO_API_KEY) throw new Error('BREVO_API_KEY environment variable is not set');
 if (!process.env.CLOUDINARY_CLOUD_NAME) throw new Error('CLOUDINARY_CLOUD_NAME environment variable is not set');
 if (!process.env.CLOUDINARY_API_KEY) throw new Error('CLOUDINARY_API_KEY environment variable is not set');
@@ -29,8 +31,10 @@ const config = {
     RESET_PASSWORD_SECRET: process.env.RESET_PASSWORD_SECRET,
     PORT: process.env.PORT,
     SENDER_EMAIL: process.env.SENDER_EMAIL,
-    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     COMPANY_NAME: process.env.COMPANY_NAME,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL,
     BREVO_API_KEY: process.env.BREVO_API_KEY,
     CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
     CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,

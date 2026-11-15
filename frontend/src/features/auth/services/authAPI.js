@@ -64,10 +64,8 @@ export const forgotPassword = async ({ newPassword, confirmPassword })=> {
     return response.data
 }
 
-export const googleAuth = async ({ idToken })=> {
-    const response = await api.post('/auth/user/google-auth', { idToken })
-    if (response.data.accessToken) setAccessToken(response.data.accessToken);
-    return response.data
+export const getGoogleAuthUrl = () => {
+    return `${import.meta.env.VITE_SERVER_URL}/auth/user/google`
 }
 
 // naya export — app load hote waqt bootstrap ke liye chahiye hoga (Step 3 dekhein)

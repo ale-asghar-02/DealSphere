@@ -458,55 +458,47 @@ const resetPassword = async (req, res, next) => {
   }
 };
 
-// ── Google Login / Register ─────────────────────────────────────────────
-const googleAuth = async (req, res, next) => {
+// ── Google Login / Register (Passport callback) ─────────────────────────
+const googleCallback = async (req, res) => {
+  const fail = (code) =>
+    res.redirect(`${config.CLIENT_URL}/login?error=${code}`);
+
   try {
-    const { idToken } = req.body;
-    if (!idToken) {
-      return next(new AppError("Google ID token is required", 400));
-    }
+    const { googleId, email, name, emailVerified } = req.user || {};
 
-    let payload;
-    try {
-      const ticket = await googleClient.verifyIdToken({
-        idToken,
-        audience: config.GOOGLE_CLIENT_ID,
-      });
-      payload = ticket.getPayload();
-    } catch {
-      return next(new AppError("Invalid Google token", 401));
-    }
-
-    if (!payload.email_verified) {
-      return next(new AppError("Google email is not verified", 401));
-    }
-
-    const { sub: googleId, email, name } = payload;
+    if (!googleId || !email) return fail("google_failed");
+    if (!emailVerified) return fail("email_not_verified");
 
     let user = await userModel.findOne({ googleId });
 
-    // Agar googleId se nahi mila, email se check karo
     if (!user) {
       user = await userModel.findOne({ email: email.toLowerCase() });
     }
 
-    // Deleted account: na login, na dobara register, na googleId link
-    if (user?.deletion?.isDeleted) {
-      return next(
-        new AppError(
-          "This account has been deleted and cannot be used again",
-          403,
-        ),
-      );
-    }
+    if (user?.deletion?.isDeleted) return fail("account_deleted");
 
-    // Email wala user mila magar googleId link nahi hai — link karo
     if (user && !user.googleId) {
       user.googleId = googleId;
       await user.save();
     }
 
-    // Naya user — account banao aur OTP bhejo
+    const sendOtpAndRedirect = async (u) => {
+      const otp = generateOtp();
+      u.verifyOtp = hashToken(otp);
+      u.verifyOtpExpireAt = Date.now() + OTP_EXPIRY_MS;
+      await u.save();
+
+      sendEmailSafely(
+        "verify-otp:google",
+        u.email,
+        verifyAccountTemplate(u.username, otp),
+      );
+
+      return res.redirect(
+        `${config.CLIENT_URL}/verify-otp?email=${encodeURIComponent(u.email)}`,
+      );
+    };
+
     if (!user) {
       user = await userModel.create({
         username: name || email.split("@")[0],
@@ -514,76 +506,26 @@ const googleAuth = async (req, res, next) => {
         googleId,
         isAccountVerified: false,
       });
-
-      const otp = generateOtp();
-      user.verifyOtp = hashToken(otp);
-      user.verifyOtpExpireAt = Date.now() + OTP_EXPIRY_MS;
-      await user.save();
-
-      sendEmailSafely(
-        "verify-otp:google",
-        user.email,
-        verifyAccountTemplate(user.username, otp),
-      );
-
-      return res.status(200).json({
-        success: true,
-        message:
-          "Account created. Please verify the OTP sent to your email to complete registration.",
-        email: user.email,
-      });
+      return sendOtpAndRedirect(user);
     }
 
-    // Existing user hai magar verified nahi — OTP bhejo, login mat karo
-    if (!user.isAccountVerified) {
-      const otp = generateOtp();
-      user.verifyOtp = hashToken(otp);
-      user.verifyOtpExpireAt = Date.now() + OTP_EXPIRY_MS;
-      await user.save();
+    if (!user.isAccountVerified) return sendOtpAndRedirect(user);
 
-      sendEmailSafely(
-        "verify-otp:google",
-        user.email,
-        verifyAccountTemplate(user.username, otp),
-      );
-
-      return res.status(200).json({
-        success: true,
-        message:
-          "Please verify the OTP sent to your email to complete verification.",
-        email: user.email,
-      });
-    }
-
-    if (user.moderation.isBanned) {
-      return next(new AppError(`Your account has been banned.`, 403));
-    }
+    if (user.moderation.isBanned) return fail("account_banned");
 
     if (
       user.moderation.suspendedUntil &&
       user.moderation.suspendedUntil > new Date()
     ) {
-      return next(
-        new AppError(
-          `Your account is suspended until ${user.moderation.suspendedUntil.toDateString()}.`,
-          403,
-        ),
-      );
+      return fail("account_suspended");
     }
 
-    // Verified user — normal login
-    const { accessToken } = await issueAuthTokens(res, user, req);
+    await issueAuthTokens(res, user, req);
 
-    const userSafe = await userModel.findById(user._id).select("-password");
-
-    return res.status(200).json({
-      success: true,
-      message: "Logged in successfully",
-      accessToken,
-      user: userSafe,
-    });
+    return res.redirect(`${config.CLIENT_URL}/`);
   } catch (error) {
-    next(error);
+    console.error("Google callback error:", error);
+    return res.redirect(`${config.CLIENT_URL}/login?error=server_error`);
   }
 };
 
@@ -598,5 +540,5 @@ module.exports = {
   sendResetOtp,
   verifyResetOtp,
   resetPassword,
-  googleAuth,
+  googleCallback,
 };
