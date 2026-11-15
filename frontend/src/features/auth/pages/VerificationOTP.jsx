@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams, Navigate } from "react-router-dom";
 import { IconShieldCheck } from "@tabler/icons-react";
 import { useAuth } from "../hooks/useAuth";
 
@@ -8,6 +8,7 @@ import EmailInput from "../components/EmailInput";
 const VerificationOTP = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const {
     authLoading,
     user,
@@ -23,7 +24,14 @@ const VerificationOTP = () => {
   // mode: 'reset' → forgot password flow, otherwise → register/account-verify flow
   const mode = location.state?.mode === "reset" ? "reset" : "register";
 
-  const [email] = useState(location.state?.email || user?.email || "");
+  // email ka source: router state (normal register / reset),
+  // ?email= query param (Google signup redirect), ya logged-in user
+  const [email] = useState(
+    location.state?.email ||
+      searchParams.get("email") ||
+      user?.email ||
+      ""
+  );
   const [otp, setOtp] = useState("");
 
   const submitVerifyHandler = async (e) => {
@@ -129,6 +137,11 @@ const VerificationOTP = () => {
     }
   };
 
+  // Email ke bina page na khule (saare hooks ke BAAD hona zaroori hai)
+  if (!email) {
+    return <Navigate to={mode === "reset" ? "/login" : "/register"} replace />;
+  }
+
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 p-3">
       <div
@@ -149,11 +162,7 @@ const VerificationOTP = () => {
           </p>
 
           <form onSubmit={submitVerifyHandler}>
-            <EmailInput
-              value={email}
-              label="Your email"
-              readOnly
-            />
+            <EmailInput value={email} label="Your email" readOnly />
 
             <div className="col-12 mb-4">
               <div className="d-flex justify-content-between">
@@ -173,11 +182,17 @@ const VerificationOTP = () => {
                 ))}
               </div>
               {fieldErrors.otp && (
-                <div className="text-start text-danger small mt-1">{fieldErrors.otp}</div>
+                <div className="text-start text-danger small mt-1">
+                  {fieldErrors.otp}
+                </div>
               )}
             </div>
 
-            <button type="submit" className="col-12 btn btn-primary py-2 mb-3" disabled={authLoading}>
+            <button
+              type="submit"
+              className="col-12 btn btn-primary py-2 mb-3"
+              disabled={authLoading}
+            >
               {authLoading ? "Waiting..." : "Click here"}
             </button>
           </form>
