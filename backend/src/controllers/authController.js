@@ -467,7 +467,7 @@ const buildGoogleUsername = (name, email) => {
 
 const googleCallback = async (req, res) => {
   const fail = (code) =>
-    res.redirect(`${config.CLIENT_URL}/login?error=${code}`);
+    res.redirect(`${config.CLIENT_URL}/login`);
 
   try {
     const { googleId, email, name, emailVerified } = req.user || {};
@@ -501,7 +501,7 @@ const googleCallback = async (req, res) => {
     }
 
     const sendOtpAndRedirect = async (u) => {
-      const redirectUrl = `${config.CLIENT_URL}/verify-otp?email=${encodeURIComponent(u.email)}`;
+      const redirectUrl = `${config.CLIENT_URL}/verify-otp}`;
 
       // OTP spam rokne ke liye: 60s ke andar dobara OTP na bhejo
       if (u.verifyOtpExpireAt) {
