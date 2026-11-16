@@ -178,15 +178,19 @@ const callGeminiModeration = async (prompt, images) => {
     inlineData: { mimeType: img.mimeType, data: img.base64 },
   }));
 
-  const response = await generate({
-    model: config.GEMINI_MODEL,
-    contents: [
-      {
-        role: "user",
-        parts: [{ text: prompt }, ...imageParts],
-      },
-    ],
-  });
+  let response;
+  try {
+    response = await generate({
+      model: config.GEMINI_MODEL,
+      contents: [{ role: "user", parts: [{ text: prompt }, ...imageParts] }],
+    });
+  } catch (err) {
+    const msg = String(err?.message || "");
+    if (msg.includes("429") || msg.includes("quota")) {
+      throw new AppError("Ai limit reached, please try again later.", 429);
+    }
+    throw new AppError("Ai is unavailable right now, please try again.", 500);
+  }
 
   let text = (response.text || "").trim();
   text = text.replace(/```json|```/g, "").trim();

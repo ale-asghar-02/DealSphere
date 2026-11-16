@@ -151,10 +151,10 @@ const ChatbotWidget = () => {
           ref={windowRef}
           className={`chatbot-window shadow-lg border rounded-3 bg-white d-flex flex-column ${
             closing ? "chatbot-window-closing" : "chatbot-window-opening"
-          }`}>
-          
+          }`}
+        >
           {/* Header */}
-          <div className="d-flex align-items-center justify-content-between px-3 py-3 bg-body-secondary border-bottom rounded-top-3 position-relative">
+          <div className="flex-shrink-0 d-flex align-items-center justify-content-between px-3 py-3 bg-body-secondary border-bottom rounded-top-3 position-relative">
             <div className="d-flex align-items-center gap-2">
               <IconMessageChatbot size={22} className="text-primary" stroke={1.75} />
               <span className="fw-medium">Chatbot</span>
@@ -225,7 +225,7 @@ const ChatbotWidget = () => {
           </div>
 
           {/* Input */}
-          <div className="d-flex align-items-center gap-2 px-3 py-0 border-top">
+          <div className="flex-shrink-0 d-flex align-items-center gap-2 px-3 py-0 border-top">
             <input
               type="text"
               className="form-control border-0 shadow-none px-1"

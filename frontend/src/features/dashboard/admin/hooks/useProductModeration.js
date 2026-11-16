@@ -79,7 +79,11 @@ const useProductModeration = () => {
     try {
       const data = await adminDeleteProduct(productId);
       toast.success("Product deleted successfully");
-      setProducts((prev) => prev.filter((p) => p._id !== productId));
+      setProducts((prev) =>
+        prev.map((p) =>
+          p._id === productId ? { ...p, status: "deleted", deletedBy: "admin" } : p
+        )
+      );
       return data;
     } catch (error) {
       toast.error(

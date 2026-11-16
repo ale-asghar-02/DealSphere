@@ -121,7 +121,7 @@ const Services = () => {
         <CategoryItems />
       </div>
 
-      <div className='services-section mx-lg-4'>
+      <div className='services-section px-3 px-lg-0 mx-lg-4'>
         <div className="col-12 d-flex flex-wrap justify-content-center py-0 py-md-3 position-relative mb-3 mb-lg-0">
           <div className='col-12 col-lg-7 text-center py-lg-5'>
             <h1 className='text-center fw-bold lh-sm' style={{ fontSize: 'calc(1rem + 3.6vw)' }}>

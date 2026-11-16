@@ -32,7 +32,7 @@ const TYPE_LABEL = {
   subscription_purchase: 'Subscription',
   feature_purchase: 'Featured Ad',
   design_purchase: 'Design Subscription',
-  refund: 'Refund',
+  order_refund: 'Refund',
 }
 
 // Buyer only ever sees the money they paid out and refunds they received.

@@ -71,7 +71,11 @@ const useAdsModeration = () => {
     try {
       await adminDeleteAd(adId);
       toast.success("Ad deleted successfully");
-      setAds((prev) => prev.filter((ad) => ad._id !== adId));
+      setAds((prev) =>
+        prev.map((ad) =>
+          ad._id === adId ? { ...ad, status: "deleted", deletedBy: "admin" } : ad
+        )
+      );
       return true;
     } catch (error) {
       toast.error(getToastError(error, "Something went wrong! Cannot delete ad"));

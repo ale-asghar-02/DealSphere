@@ -27,7 +27,7 @@ const TYPE_LABEL = {
   withdrawal: 'Withdrawal',
   subscription_purchase: 'Subscription',
   featured_purchase: 'Featured Ad',
-  refund: 'Refund',
+  order_refund: 'Refund',
 }
 
 const Transactions = () => {

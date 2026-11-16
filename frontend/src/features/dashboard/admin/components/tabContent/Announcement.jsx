@@ -44,9 +44,7 @@ const Announcement = () => {
   const [editingAnnouncement, setEditingAnnouncement] = useState(null);
   const [formData, setFormData] = useState(initialForm);
 
-  useEffect(() => {
-    fetchAnnouncements();
-  }, [fetchAnnouncements]);
+  useEffect(() => { fetchAnnouncements() }, [fetchAnnouncements]);
 
   const openCreateModal = () => {
     setEditingAnnouncement(null);
